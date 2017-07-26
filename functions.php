@@ -285,3 +285,6 @@ genesis_register_sidebar( array(
 	'name'        => __( 'Offscreen Content', 'infinity-pro' ),
 	'description' => __( 'This is the offscreen content section.', 'infinity-pro' ),
 ) );
+
+// Add My Custom Functions File
+include_once( get_stylesheet_directory() . '/custom.php' );
