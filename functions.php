@@ -286,5 +286,51 @@ genesis_register_sidebar( array(
 	'description' => __( 'This is the offscreen content section.', 'infinity-pro' ),
 ) );
 
-// Add My Custom Functions File
-include_once( get_stylesheet_directory() . '/custom.php' );
+// Hook after header area
+add_action( 'genesis_after_header', 'bw_featured_image_title' );
+
+function bw_featured_image_title() {
+// If it is a page and has a featured thumbnail, but is not the front page do the following...
+  if (has_post_thumbnail() && is_page() ) {
+
+  remove_action( 'genesis_entry_header', 'genesis_entry_header_markup_open', 5 );
+	remove_action( 'genesis_entry_header', 'genesis_entry_header_markup_close', 15 );
+	remove_action( 'genesis_entry_header', 'genesis_do_post_title' );
+
+	add_action( 'bw_featured_title', 'genesis_entry_header_markup_open', 5 );
+	add_action( 'bw_featured_title', 'genesis_entry_header_markup_close', 15 );
+	add_action('bw_featured_title', 'genesis_do_post_title');
+
+// Get hero image and save in variable called $background
+
+
+  $image_desktop = wp_get_attachment_image_src( get_post_thumbnail_id(  $post_id ), 'large' )[0];
+  $image_mobile = wp_get_attachment_image_src( get_post_thumbnail_id(  $post_id ), 'medium' )[0];
+
+  $image_desktop_size = wp_get_attachment_image_src( get_post_thumbnail_id(  $post_id ), 'large' )[2];
+  $image_mobile_size = wp_get_attachment_image_src( get_post_thumbnail_id(  $post_id ), 'medium' )[2];
+
+  $featured_class = 'bw-featured-title';
+
+ ?> 
+<div class='<?php echo $featured_class; ?>'><?php do_action('bw_featured_title'); ?></div>
+<style>
+	<?php echo ".$featured_class "; ?> {
+		background-image:url( <?php echo $image_mobile; ?>); 
+		max-height:<?php echo $image_mobile_size . "px"; ?>;
+		height:<?php echo $image_mobile_size . "px"; ?>;
+
+	}
+		
+	@media only screen and (min-width : 992px) {       
+        <?php echo ".$featured_class "; ?> {
+        	background-image:url(<?php echo $image_desktop;?>); 
+        	max-height:<?php echo $image_desktop_size . "px"; ?>;
+        	height:400px;
+        }
+}
+</style>
+<?php
+
+    }
+ }
